@@ -1,6 +1,6 @@
+import 'package:demo_project/questionary.dart';
+import 'package:demo_project/result.dart';
 import 'package:flutter/material.dart';
-import './question.dart';
-import './answer.dart';
 
 main() => runApp(const QuestionApp());
 
@@ -10,11 +10,19 @@ class _QuestionAppState extends State<QuestionApp> {
   final _questions = const [
     {
       'text': 'Cor',
-      'anwswers': ['Preto', 'vermelho', 'azul']
+      'anwswers': [
+        {'text': 'Preto', 'score': 10},
+        {'text': 'vermelho', 'score': 7},
+        {'text': 'azul', 'score': 5}
+      ]
     },
     {
       'text': 'animal',
-      'anwswers': ['cachorro', 'gato', 'peixe']
+      'anwswers': [
+        {'text': 'cachorro', 'score': 9},
+        {'text': 'gato', 'score': 6},
+        {'text': 'peixe', 'score': 3}
+      ]
     },
   ];
 
@@ -32,29 +40,20 @@ class _QuestionAppState extends State<QuestionApp> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> anwswers = hasSelectedQuestions
-        ? _questions[_selectedQuestion].cast()['anwswers']
-        : [];
-
     return MaterialApp(
-        home: Scaffold(
-      appBar: AppBar(
-        title: const Text('Flutter APP'),
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Flutter APP'),
+        ),
+        body: hasSelectedQuestions
+            ? Questionary(
+                whenAnswer: _answer,
+                questions: _questions,
+                selectedQuestion: _selectedQuestion,
+              )
+            : const Result(),
       ),
-      body: hasSelectedQuestions
-          ? Column(
-              children: <Widget>[
-                Question(_questions[_selectedQuestion]['text'].toString()),
-                ...anwswers.map((t) => Answer(t, _answer)).toList(),
-              ],
-            )
-          : const Center(
-              child: Text(
-                'OK!',
-                style: TextStyle(fontSize: 28),
-              ),
-            ),
-    ));
+    );
   }
 }
 
