@@ -1,41 +1,68 @@
 import 'package:flutter/material.dart';
+import './question.dart';
+import './answer.dart';
 
-main() => runApp(QuestionApp());
+main() => runApp(const QuestionApp());
 
-class QuestionAppState extends State<QuestionApp> {
-  var selectQuestion = 0;
+class _QuestionAppState extends State<QuestionApp> {
+  int _selectedQuestion = 0;
 
-  void answer() {
-    print('ok');
-    setState(() {
-      selectQuestion++;
-    });
+  final _questions = const [
+    {
+      'text': 'Cor',
+      'anwswers': ['Preto', 'vermelho', 'azul']
+    },
+    {
+      'text': 'animal',
+      'anwswers': ['cachorro', 'gato', 'peixe']
+    },
+  ];
+
+  void _answer() {
+    if (hasSelectedQuestions) {
+      setState(() {
+        _selectedQuestion++;
+      });
+    }
+  }
+
+  bool get hasSelectedQuestions {
+    return _selectedQuestion < _questions.length;
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<String> questions = ['asd asd', 'fgh fgh'];
+    List<String> anwswers = hasSelectedQuestions
+        ? _questions[_selectedQuestion].cast()['anwswers']
+        : [];
 
     return MaterialApp(
         home: Scaffold(
       appBar: AppBar(
-        title: Text('Flutter APP'),
+        title: const Text('Flutter APP'),
       ),
-      body: Column(
-        children: <Widget>[
-          Text(questions[selectQuestion]),
-          ElevatedButton(onPressed: answer, child: Text('anwser 1')),
-          ElevatedButton(onPressed: answer, child: Text('anwser 2')),
-          ElevatedButton(onPressed: answer, child: Text('anwser 3')),
-        ],
-      ),
+      body: hasSelectedQuestions
+          ? Column(
+              children: <Widget>[
+                Question(_questions[_selectedQuestion]['text'].toString()),
+                ...anwswers.map((t) => Answer(t, _answer)).toList(),
+              ],
+            )
+          : const Center(
+              child: Text(
+                'OK!',
+                style: TextStyle(fontSize: 28),
+              ),
+            ),
     ));
   }
 }
 
 class QuestionApp extends StatefulWidget {
+  const QuestionApp({super.key});
+
   @override
-  QuestionAppState createState() {
-    return QuestionAppState();
+  _QuestionAppState createState() {
+    return _QuestionAppState();
   }
 }
